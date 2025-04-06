@@ -1,1 +1,155 @@
-<h2>hello world</h2>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Fake (fake)</title>
+    <style>
+      body {
+        background-color: #121212;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      #mainContent {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      input, button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        margin: 0.5rem;
+        border-radius: 8px;
+        border: none;
+      }
+
+      button {
+        background-color: #1e88e5;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #1565c0;
+      }
+
+      .skin-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .skin-container {
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      .input-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 1rem;
+      }
+
+      .input-container input {
+        width: 90%;
+        max-width: 400px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h2>CS2 Crafter</h2>
+    
+    <!-- Поле для ввода трейд-ссылки -->
+    <div class="input-container">
+      <input type="text" id="tradeLink" placeholder="Enter your trade link..." />
+      <button onclick="saveTradeLink()">Save Trade Link</button>
+    </div>
+
+    <p id="welcomeText">Please log in using Telegram</p>
+
+    <!-- Контейнер для кнопки Telegram -->
+    <div id="telegram-login-button"></div>
+
+    <!-- Основной контент после входа -->
+    <div id="mainContent">
+      <h3>Welcome, <span id="username"></span></h3>
+      
+      <!-- Контейнер скина и кнопки -->
+      <div class="skin-container">
+        <p class="skin-name">AWP | Dragon Lore</p>
+        <button onclick="craftSkin()">Craft</button>
+      </div>
+    </div>
+
+    <!-- СКРИПТ: Отображение кнопки Telegram -->
+    <script type="text/javascript">
+      // Функция для сохранения трейд-ссылки в куки
+      function saveTradeLink() {
+        const tradeLink = document.getElementById("tradeLink").value;
+        if (tradeLink) {
+          // Сохраняем ссылку в куки
+          document.cookie = `tradeLink=${tradeLink}; path=/; max-age=31536000`; // 1 год
+        }
+      }
+
+      // Функция для загрузки трейд-ссылки из куки
+      function loadTradeLink() {
+        const cookies = document.cookie.split("; ");
+        for (let cookie of cookies) {
+          const [name, value] = cookie.split("=");
+          if (name === "tradeLink") {
+            document.getElementById("tradeLink").value = value;
+            break;
+          }
+        }
+      }
+
+      // Отображение кнопки Telegram
+      function renderTelegramLogin() {
+        const script = document.createElement("script");
+        script.src = "https://telegram.org/js/telegram-widget.js?7";
+        script.setAttribute("data-telegram-login", "Xyzio_robot"); // твой бот
+        script.setAttribute("data-size", "large");
+        script.setAttribute("data-userpic", "false");
+        script.setAttribute("data-request-access", "write");
+        script.setAttribute("data-onauth", "onTelegramAuth(user)");
+        script.async = true;
+
+        document.getElementById("telegram-login-button").appendChild(script);
+      }
+
+      function onTelegramAuth(user) {
+        // Показываем пользователя после авторизации
+        document.getElementById("welcomeText").style.display = "none";
+        document.getElementById("telegram-login-button").style.display = "none";
+        document.getElementById("mainContent").style.display = "flex";
+
+        // Отображаем имя пользователя
+        document.getElementById("username").innerText = user.first_name || user.username;
+      }
+
+      function craftSkin() {
+        // Очищаем содержимое страницы
+        document.body.innerHTML = '';
+      }
+
+      // Загружаем трейд-ссылку из куки при загрузке страницы
+      window.onload = function() {
+        loadTradeLink();
+        renderTelegramLogin();
+      };
+    </script>
+
+  </body>
+</html>
